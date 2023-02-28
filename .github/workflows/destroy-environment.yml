@@ -10,7 +10,7 @@ permissions:
   contents: read  # This is required for actions/checkout
 
 jobs:
-  terraform-destroy-poc:
+  destroy-poc:
     environment: POC
     runs-on: ubuntu-latest
 
