@@ -71,5 +71,4 @@ runs:
           --name "${{ inputs.deploymentPrefix }}-$($config.parameters.environment.value)" `
           --location $config.parameters.primaryLocation.value `
           --template-file bicep/main.bicep `
-          --parameters @bicep/params/$($config.parameters.environment.value).json `
-          parKeyVaultCreateMode=$keyVaultCreateMode
+          --parameters @bicep/params/$($config.parameters.environment.value).json
