@@ -16,18 +16,3 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - uses: frasermolyneux/actions/terraform-destroy@main
-        with:
-          terraform-folder: "terraform"
-          terraform-var-file: "tfvars/poc.tfvars"
-          backend-subscription-id: ${{ secrets.tf_backend_subscription_id }}
-          backend-resource-group-name: ${{ secrets.tf_backend_resource_group_name }}
-          backend-storage-account-name: ${{ secrets.tf_backend_storage_account_name }}
-          backend-container-name: ${{ secrets.tf_backend_container_name }}
-          backend-key: ${{ secrets.tf_backend_key }}
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
