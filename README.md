@@ -1,25 +1,3 @@
-# POC - __summary title__
+# POC - Managing WAF Policy with Bicep
 
-Add a __Proof of concept summary__ here.
-
----
-
-## Architecture
-
-Add an __architecture diagram__ here.
-
-List the __architecture components__ here.
-
----
-
-## Further Considerations
-
-Naturally, this is a limited architecture for the POC with many additional considerations required. Here are a few as a starting point:
-
-List the __further architecture considerations__ here.
-
----
-
-## POC Scenarios
-
-List the __POC Scenarios__ here.
+This repository contains a proof of concept for managing a Web Application Firewall (WAF) policy with Bicep. The POC shows how to use Bicep to deploy an Azure Front Door WAF policy with some exclusions and custom rules.
