@@ -1,0 +1,75 @@
+name: "bicep-build-and-apply"
+  
+inputs:
+  environmentName:
+    description: "The name of the environment e.g. dev, prd"
+    required: true
+    type: string
+  deploymentPrefix:
+    description: "The name for the ARM deployment"
+    type: string
+    default: "poc-deployment"
+  AZURE_CLIENT_ID: 
+    description: "The azure client/application ID configured for federated access"
+    required: true
+    type: string
+  AZURE_TENANT_ID: 
+    description: "The target Azure tenant"
+    required: true
+    type: string
+  AZURE_SUBSCRIPTION_ID: 
+    description: "The target Azure subscription"
+    required: true
+    type: string
+  
+runs:
+  using: "composite"
+
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Az CLI Login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ inputs.AZURE_CLIENT_ID }}
+        tenant-id: ${{ inputs.AZURE_TENANT_ID }}
+        subscription-id: ${{ inputs.AZURE_SUBSCRIPTION_ID }}
+    
+    - name: Build Bicep
+      shell: bash
+      run: |
+        az bicep build --file bicep/main.bicep --stdout
+
+    - name: Validate Bicep
+      shell: pwsh
+      run: |
+        $config = (Get-Content bicep/params/${{ inputs.environmentName }}.json | ConvertFrom-Json)
+
+        az deployment sub validate `
+          --name "${{ inputs.deploymentPrefix }}-$($config.parameters.environment.value)" `
+          --location $config.parameters.primaryLocation.value `
+          --template-file bicep/main.bicep `
+          --parameters @bicep/params/$($config.parameters.environment.value).json
+
+    - name: WhatIf Bicep
+      shell: pwsh
+      run: |
+        $config = (Get-Content bicep/params/${{ inputs.environmentName }}.json | ConvertFrom-Json)
+
+        az deployment sub what-if `
+          --name "${{ inputs.deploymentPrefix }}-$($config.parameters.environment.value)" `
+          --location $config.parameters.primaryLocation.value `
+          --template-file bicep/main.bicep `
+          --parameters @bicep/params/$($config.parameters.environment.value).json
+
+    - name: Deploy Platform Bicep
+      shell: pwsh
+      run: |
+        $config = (Get-Content bicep/params/${{ inputs.environmentName }}.json | ConvertFrom-Json)
+
+        az deployment sub create `
+          --name "${{ inputs.deploymentPrefix }}-$($config.parameters.environment.value)" `
+          --location $config.parameters.primaryLocation.value `
+          --template-file bicep/main.bicep `
+          --parameters @bicep/params/$($config.parameters.environment.value).json `
+          parKeyVaultCreateMode=$keyVaultCreateMode
