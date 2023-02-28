@@ -29,11 +29,7 @@ jobs:
         run: |
           $config = (Get-Content bicep/params/poc.json | ConvertFrom-Json)
           $deployment = az deployment sub show --name "waf-policy-$($config.parameters.environment.value)" | ConvertFrom-Json
-          echo "resource_groups=$($deployment.properties.outputs.resourceGroups.value|ConvertTo-Json)" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
 
-      - shell: pwsh
-        run: |
-          $resourceGroups = ${{ steps.bicep-output.outputs.resource_groups }} | ConvertFrom-Json
-          foreach ($resourceGroup in $resourceGroups) {
-            az group delete --name $resourceGroup --yes
+          foreach ($resourceGroup in $deployment.properties.outputs.resourceGroups.value) {
+            az group delete --name $resourceGroup.name --yes
           }
