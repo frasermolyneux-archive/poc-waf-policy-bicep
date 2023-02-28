@@ -20,6 +20,19 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = [for location in l
   properties: {}
 }]
 
+module frontDoorWafPolicy 'modules/frontDoorWafPolicy.bicep' = {
+  name: 'frontDoorWafPolicy'
+  scope: resourceGroup('rg-${environmentUniqueId}-${environment}-${primaryLocation}')
+
+  params: {
+    policyName: 'fdwaf${environmentUniqueId}${environment}'
+  }
+
+  dependsOn: [
+    rg
+  ]
+}
+
 // Outputs
 output resourceGroups array = [for (location, i) in locations: {
   location: location
