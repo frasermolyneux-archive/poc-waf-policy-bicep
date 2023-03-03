@@ -101,6 +101,12 @@ resource frontDoorWafPolicy 'Microsoft.Network/frontdoorwebapplicationfirewallpo
                   action: 'AnomalyScoring'
                   exclusions: []
                 }
+                {
+                  ruleId: '933150'
+                  enabledState: 'Disabled'
+                  action: 'AnomalyScoring'
+                  exclusions: []
+                }
               ]
               exclusions: []
             }
